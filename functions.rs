@@ -73,4 +73,63 @@ impl Backend for L1XVM {
 
     fn block_difficulty(&self) -> U256 {
         self.backend.block_difficulty()
+    }
+    // API functions
+
+// Submit a transaction to the mempool
+fn submit_transaction(tx: Transaction) -> Result<(), String> {
+    // Add the transaction to the mempool
+    mempool.push(tx);
+    Ok(())
+}
+
+// Query the current state of the trie data structure
+fn query_state(key: &str) -> Result<Option<String>, String> {
+    // Retrieve the value associated with the key from the trie
+    let value = trie.get(key)?;
+    Ok(value)
+}
+
+// Retrieve the current list of validators and their stakes
+fn get_validators() -> Vec<Validator> {
+    // Return the list of validators and their stakes
+    validators.clone()
+}
+
+// Access historical transactions and blocks
+fn get_history(block_num: u64) -> Result<Block, String> {
+    // Retrieve the block at the specified block number from the blockchain
+    let block = blockchain.get_block(block_num)?;
+    Ok(block)
+}
+
+// Interact with smart contracts deployed on the L1X VM
+fn call_contract(contract_addr: &str, data: &[u8]) -> Result<Vec<u8>, String> {
+    // Retrieve the contract from the contract database
+    let contract = contracts.get(contract_addr)?;
+    // Call the contract's execute function with the supplied data
+    let result = contract.execute(data)?;
+    Ok(result)
+}
+
+// Main function
+fn main() {
+    // Initialize the trie, mempool, validators, blockchain, and contracts
+    let trie = Trie::new();
+    let mut mempool = Mempool::new();
+    let mut validators = Vec::new();
+    let mut blockchain = Blockchain::new();
+    let mut contracts = ContractDatabase::new();
+
+    // Add some initial validators
+    validators.push(Validator {
+        address: "0x123".to_string(),
+        stake: 1000,
+    });
+    validators.push(Validator {
+        address: "0x456".to_string(),
+        stake: 500,
+    });
+
+    // Run
    
